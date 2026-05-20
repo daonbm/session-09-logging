@@ -1,27 +1,22 @@
 package com.re.session09.controller;
 
+import com.re.session09.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
+    private final OrderService orderService;
 
-    // Simulate temporary memory to storage order list
-    private final Map<String, Map<String, Object>> orderStorage = new HashMap<>();
-
-    @GetMapping
+    @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody Map<String, Object> orderRequest) {
         // Controller layer has more code than the service layer
         log.info("Received request to create a new order");
@@ -43,20 +38,11 @@ public class OrderController {
         log.debug("Processing placement context -> User ID: {}, Total Amount: {}", userId, totalAmount);
 
         try {
-            // Simulate processing database & logic operations
-            String orderId = "ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            // Gọi Service (Nơi chứa cả logic thành công và 2 tầng logic thất bại)
+            Map<String, Object> result = orderService.createOrder(userId, totalAmount);
 
-            log.info("Successfully created order with ID: {}", orderId);
-
-            Map<String, Object> orderDetails = new HashMap<>();
-            orderDetails.put("orderId", orderId);
-            orderDetails.put("status", "CREATED");
-
-            // Save to mock database
-            orderStorage.put(orderId, orderDetails);
-
-            log.info("The order [{}] has been successfully created for customer [{}]", orderId, userId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(orderDetails);
+            log.info("The order has been successfully created for customer [{}]", userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (Exception e) {
             // 5. Best Practice: Use ERROR level for runtime exceptions.
             // Passing the exception object 'e' as the last parameter tells SLF4J to log the entire stack trace.
@@ -67,20 +53,20 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable String id) {
-        log.info("Fetching details for Order ID: {}", id);
-
-        // Simulating an order lookup
-        if ("ORD-NOTFOUND".equals(id)) {
-            log.warn("Lookup execution targeted a missing entity record: {}", id);
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(Map.of(
-                "orderId", id,
-                "amount", 150.00,
-                "currency", "USD"
-        ));
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> getOrderById(@PathVariable String id) {
+//        log.info("Fetching details for Order ID: {}", id);
+//
+//        // Simulating an order lookup
+//        if (!orderStorage.containsKey(id)) {
+//            log.warn("Query failed: Order code [{}] does not exist in the system: ", id);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(Map.of("message", "No order found."));
+//        }
+//
+//        Map<String, Object> order = orderStorage.get(id);
+//        log.debug("Results of retrieving records from temporary memory: {}", order);
+//
+//        return ResponseEntity.ok(order);
+//    }
 }
