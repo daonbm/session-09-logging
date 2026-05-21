@@ -1,0 +1,24 @@
+2026-05-21T13:56:08.450+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []com.re.session09.Application             : Starting Application using Java 21.0.10 with PID 13992 (D:\rikeii\pm-ra-ptit-subjects\semester-3-4-programming-major\subject-5-java-web-service\session-09-logging\build\classes\java\main started by Admin in D:\rikeii\pm-ra-ptit-subjects\semester-3-4-programming-major\subject-5-java-web-service\session-09-logging)
+2026-05-21T13:56:08.451+07:00 DEBUG 13992 --- [session-09-logging] [restartedMain] []com.re.session09.Application             : Running with Spring Boot v4.0.6, Spring v7.0.7
+2026-05-21T13:56:08.452+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []com.re.session09.Application             : The following 1 profile is active: "dev"
+2026-05-21T13:56:08.482+07:00  INFO 13992 --- [session-09-logging] [restartedMain] [].e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-05-21T13:56:08.482+07:00  INFO 13992 --- [session-09-logging] [restartedMain] [].e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-05-21T13:56:08.940+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-21T13:56:08.948+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-21T13:56:08.949+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-05-21T13:56:08.976+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 494 ms
+2026-05-21T13:56:08.999+07:00 DEBUG 13992 --- [session-09-logging] [restartedMain] []com.re.session09.filter.TraceIdFilter    : Filter 'traceIdFilter' configured for use
+2026-05-21T13:56:09.192+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-21T13:56:09.196+07:00  INFO 13992 --- [session-09-logging] [restartedMain] []com.re.session09.Application             : Started Application in 1.073 seconds (process running for 1.482)
+2026-05-21T13:56:33.973+07:00  INFO 13992 --- [session-09-logging] [http-nio-8080-exec-1] []o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-21T13:56:33.974+07:00  INFO 13992 --- [session-09-logging] [http-nio-8080-exec-1] []o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-21T13:56:33.975+07:00  INFO 13992 --- [session-09-logging] [http-nio-8080-exec-1] []o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-05-21T13:56:34.027+07:00  INFO 13992 --- [session-09-logging] [http-nio-8080-exec-1] []c.r.s.controller.OrderController         : REST request to create Order for userId: USR-99
+2026-05-21T13:56:34.027+07:00 TRACE 13992 --- [session-09-logging] [http-nio-8080-exec-1] []c.r.s.controller.OrderController         : Order request payload: {userId=USR-99, totalAmount=100000}
+2026-05-21T13:56:34.027+07:00 DEBUG 13992 --- [session-09-logging] [http-nio-8080-exec-1] []c.r.s.controller.OrderController         : Parsed order data -> User: USR-99, Amount: 100000
+2026-05-21T13:56:34.028+07:00 TRACE 13992 --- [session-09-logging] [http-nio-8080-exec-1] []c.r.s.service.impl.OrderServiceImpl      : Method [processOrder] started. Params: userId=USR-99, amount=100000.0
+2026-05-21T13:56:34.028+07:00 DEBUG 13992 --- [session-09-logging] [http-nio-8080-exec-1] []c.r.s.service.impl.OrderServiceImpl      : Preparing to persist new order to storage for user: USR-99
+2026-05-21T13:56:34.028+07:00  INFO 13992 --- [session-09-logging] [http-nio-8080-exec-1] []c.r.s.service.impl.OrderServiceImpl      : The order [ORD-998542EE] has been successfully created for customer [USR-99]
+2026-05-21T13:56:34.028+07:00  INFO 13992 --- [session-09-logging] [http-nio-8080-exec-1] []c.r.s.controller.OrderController         : Order successfully created for customer [USR-99]
+2026-05-21T13:57:49.135+07:00  INFO 13992 --- [session-09-logging] [SpringApplicationShutdownHook] []o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-21T13:57:49.139+07:00  INFO 13992 --- [session-09-logging] [tomcat-shutdown] []o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete

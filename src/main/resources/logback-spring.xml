@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property name="LOG_CORRELATION_PATTERN" value="[%X{traceId}] "/>
+
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
-    <springProperty scope="context" name="MAIN_LOG" source="logging.file.name" defaultValue="logs/spring-boot-app.log"/>
+    <springProperty scope="context" name="MAIN_LOG" source="logging.file.name" defaultValue="logs/app-all.log"/>
 
     <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${MAIN_LOG}</file>
@@ -14,6 +16,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
 
@@ -29,9 +32,34 @@
         </rollingPolicy>
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
 
+    <appender name="ASYNC_FILE_ALL" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_ALL" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="ASYNC_FILE_ALL" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="ASYNC_FILE_ALL" />
+            <appender-ref ref="FILE_ERROR" />
+        </root>
+    </springProfile>
+
     <root level="INFO">
-        <appender-ref ref="CONSOLE" />   <appender-ref ref="FILE_ALL" />  <appender-ref ref="FILE_ERROR" /></root>
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ASYNC_FILE_ALL" />
+        <appender-ref ref="FILE_ERROR" />
+    </root>
+
 </configuration>

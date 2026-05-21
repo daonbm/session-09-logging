@@ -1,7 +1,9 @@
 package com.re.session09.service.impl;
 
+import com.re.session09.exception.ExceedingLimitException;
 import com.re.session09.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,57 +17,56 @@ public class OrderServiceImpl implements OrderService {
     private final Map<String, Map<String, Object>> orderStorage = new HashMap<>();
 
     @Override
-    public Map<String, Object> createOrder(String userId, double totalAmount) throws Exception {
-        // --- GIẢ LẬP TRƯỜNG HỢP THẤT BẠI ---
-        // Nếu số tiền > 100,000, giả sử hệ thống thanh toán lỗi hoặc vượt hạn mức
+    public Map<String, Object> processOrder(String userId, double totalAmount) throws Exception {
+        // Put userId to MDC to trace all of order's processing of this user
+        MDC.put("user", userId);
+
+        // TRACE: Đánh dấu điểm bắt đầu luồng xử lý sâu nhất
+        log.trace("Method [processOrder] started. Params: userId={}, amount={}", userId, totalAmount);
+
         if (totalAmount > 100000) {
-            log.error("Order creation failed for User [{}]: Amount {} exceeds limit.", userId, totalAmount);
-            throw new Exception("Payment Gateway Timeout hoặc Vượt hạn mức giao dịch!");
+            // ERROR: Một tình huống nghiêm trọng (Ví dụ: Fraud detection hoặc lỗi thanh toán)
+            log.error("BUSINESS_RULE_VIOLATION: User [{}] attempted to pay {} which exceeds limit!", userId, totalAmount);
+            throw new ExceedingLimitException("The transaction limit has been exceeded!");
         }
 
-        // 2. Gọi processOrder để kiểm tra lỗi Hệ thống (Database connection)
-        // Method này sẽ throw RuntimeException vì saveToDatabase() luôn lỗi
-        this.processOrder(userId, totalAmount); // để test trường hợp đặt đợt thất bại
+        // DEBUG: Log trạng thái trước khi thay đổi Database giả lập
+        log.debug("Preparing to persist new order to storage for user: {}", userId);
 
-        // 3. Nếu vượt qua được 2 bước trên (giả sử sau này bạn sửa processOrder hết lỗi)
-        // thì mới thực hiện tạo đơn hàng thành công
         String orderId = "ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         Map<String, Object> orderDetails = new HashMap<>();
         orderDetails.put("orderId", orderId);
         orderDetails.put("userId", userId);
         orderDetails.put("totalAmount", totalAmount);
         orderDetails.put("status", "CREATED");
+
         orderStorage.put(orderId, orderDetails); // save to mock database
 
+        // INFO: Sự kiện quan trọng của nghiệp vụ
         log.info("The order [{}] has been successfully created for customer [{}]", orderId, userId);
+
         return orderDetails;
     }
 
     @Override
-    public void processOrder(String userId, double amount) {
-        // TRACE: Extremely detailed tracking
-        log.trace("Entering processOrder method for user: {}", userId);
+    public Map<String, Object> getOrderById(String orderId) {
+        // DEBUG: Log để kiểm tra tham số đầu vào khi cần fix bug
+        log.debug("Fetching order details for ID: {}", orderId);
 
-        // DEBUG: Diagnostic info for Dev environment
-        log.debug("Processing order details - User: {}, Amount: {}", userId, amount);
+        // Truy xuất từ "giả lập Database" orderStorage
+        Map<String, Object> order = orderStorage.get(orderId);
 
-        if (amount <= 0) {
-            // WARN: Abnormal but system continues
-            // Note: Use WARN for user input errors, not ERROR
-            log.warn("Potential malicious activity: User {} attempted a zero/negative order.", userId);
-            return;
+        if (order == null) {
+            // WARN: Log cảnh báo nếu ID không tồn tại
+            log.warn("Order with ID [{}] not found in storage.", orderId);
+
+            // Bạn có thể ném một Exception hoặc trả về một Map chứa thông báo lỗi
+            // Ở đây tôi trả về null hoặc một Map trống có tính chất thông báo
+            return null;
         }
 
-        try {
-            saveToDatabase();
-        } catch (Exception e) {
-            // ERROR: Actual system failure
-            log.error("Critical failure during order processing for User {}: ", userId, e);
-//            throw new RuntimeException(e);
-        }
-    }
-
-    private void saveToDatabase() throws Exception {
-        throw new Exception("Database Connection Lost");
+        // INFO: Chỉ log khi tìm thấy đơn hàng thành công
+        log.info("Successfully retrieved order [{}]", orderId);
+        return order;
     }
 }
