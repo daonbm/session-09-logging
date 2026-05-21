@@ -1,0 +1,5 @@
+2026-05-21T18:50:49.216+07:00  WARN 8840 --- [session-09-logging] [http-nio-8080-exec-3] [D81F8D2E] [NO_USER]c.r.s.controller.OrderController         : Validation failed: Missing mandatory fields. Received: [totalAmount]
+2026-05-21T18:51:07.426+07:00 ERROR 8840 --- [session-09-logging] [http-nio-8080-exec-5] [3EC3BDF2] [USR-99]c.r.s.service.impl.OrderServiceImpl      : BUSINESS_RULE_VIOLATION: User [USR-99] attempted to pay 200000.0 which exceeds limit!
+2026-05-21T18:51:07.426+07:00  WARN 8840 --- [session-09-logging] [http-nio-8080-exec-5] [3EC3BDF2] [USR-99]c.r.s.controller.OrderController         : Order rejected: The transaction limit has been exceeded!
+2026-05-21T18:51:22.151+07:00  WARN 8840 --- [session-09-logging] [http-nio-8080-exec-7] [40EFFA63] [NO_USER]c.r.s.service.impl.OrderServiceImpl      : Order with ID [ORD-352436A1] not found in storage.
+2026-05-21T18:51:22.151+07:00  WARN 8840 --- [session-09-logging] [http-nio-8080-exec-7] [40EFFA63] [NO_USER]c.r.s.controller.OrderController         : Lookup failed: Order code [ORD-352436A1] does not exist.
