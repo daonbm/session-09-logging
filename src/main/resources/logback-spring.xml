@@ -20,6 +20,18 @@
         </encoder>
     </appender>
 
+    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app-json.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/app-json.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+        </encoder>
+    </appender>
+
     <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/app-error.log</file>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -42,6 +54,12 @@
         <discardingThreshold>0</discardingThreshold>
     </appender>
 
+    <appender name="ASYNC_FILE_JSON" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_JSON" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
@@ -49,9 +67,17 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="test">
         <root level="INFO">
             <appender-ref ref="ASYNC_FILE_ALL" />
+            <appender-ref ref="FILE_ERROR" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="ASYNC_FILE_JSON" />
             <appender-ref ref="FILE_ERROR" />
         </root>
     </springProfile>
